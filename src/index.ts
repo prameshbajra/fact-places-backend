@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 import { setGlobalOptions } from "firebase-functions/v2";
 import { onRequest } from "firebase-functions/v2/https";
 
-setGlobalOptions({ maxInstances: 10 });
+setGlobalOptions({ maxInstances: 5 });
 
 const app = express();
 app.use(express.json());
