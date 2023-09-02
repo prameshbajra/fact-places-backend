@@ -16,8 +16,7 @@ app.post("/getPlacesData", async (req: express.Request, res: express.Response) =
     console.log("Location data: ", locationData);
     if (isTPlace(locationData)) {
         const places = await placesOfInterest(locationData);
-        console.log(places);
-        res.status(200).send(locationData);
+        res.status(200).send(places);
     } else {
         res.status(locationData.statusCode).send(locationData);
     }
