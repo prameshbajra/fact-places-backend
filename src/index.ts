@@ -1,28 +1,24 @@
-import axios from "axios";
 import * as express from "express";
-import { Request, Response } from "express";
 import { setGlobalOptions } from "firebase-functions/v2";
 import { onRequest } from "firebase-functions/v2/https";
+import { placesOfInterest } from "./openai";
+import { isTPlace } from "./typeguards";
+import { getLocationData } from "./utility";
 
 setGlobalOptions({ maxInstances: 5 });
 
 const app = express();
 app.use(express.json());
 
-app.post("/getPlacesData", async (req: Request, res: Response) => {
+app.post("/getPlacesData", async (req: express.Request, res: express.Response) => {
     const { lat, lon } = req.body;
-
-    if (!lat || !lon) {
-        res.status(400).send({ error: "Lat and Lon are required!" });
-        return;
-    }
-    try {
-        const response = await axios.get(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=en`);
-        res.status(200).send(response.data);
-    } catch (error) {
-        res.status(500).send({
-            error: "Failed to fetch data from OpenStreetMap",
-        });
+    const locationData = await getLocationData(lat, lon);
+    console.log("Location data: ", locationData);
+    if (isTPlace(locationData)) {
+        const places = await placesOfInterest(locationData);
+        console.log(places);
+    } else {
+        res.status(locationData.statusCode).send(locationData);
     }
 });
 
