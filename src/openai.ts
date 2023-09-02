@@ -19,7 +19,7 @@ const placesOfInterest = async (location: TPlace) => {
     try {
         const prompt = new PromptTemplate({
             template:
-                `
+            `
             I am currently at this location - {location}. 
             And I want you to give me at least 10 places around me that has a high historical significance 
             with it's detailed description  \n {formatInstructions}
