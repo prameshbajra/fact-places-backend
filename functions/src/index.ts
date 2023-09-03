@@ -1,4 +1,4 @@
-import * as express from "express";
+import express from "express";
 import { setGlobalOptions } from "firebase-functions/v2";
 import { onRequest } from "firebase-functions/v2/https";
 import { placesOfInterest } from "./openai";
