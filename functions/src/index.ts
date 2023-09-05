@@ -13,7 +13,6 @@ app.use(express.json());
 app.post("/getPlacesData", async (req: express.Request, res: express.Response) => {
     const { lat, lon } = req.body;
     const locationData = await getLocationData(lat, lon);
-    console.log("Location data: ", locationData);
     if (isTPlace(locationData)) {
         const places = await placesOfInterest(locationData);
         res.status(200).send(places);
