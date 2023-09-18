@@ -8,11 +8,11 @@ import { TPlace } from "./model";
 const parser = StructuredOutputParser.fromZodSchema(
   z.array(
     z.object({
-      place: z.string().describe("Name of the place"),
-      description: z
-        .string()
-        .describe(
-          "A paragraph with at least 10 sentences that describes multiple fun facts about the place like the historical significance, who made it etc"
+      id: z.number().describe("Id of the place"),
+      title: z.string().describe("Name of the place"),
+      facts: z.array(
+        z.string().describe("At least 3 sentences that elaborates the fact about the place")).describe(
+          "An array of very interesting facts about the place like historical significance, who made it etc"
         ),
     })
   )
@@ -21,8 +21,9 @@ const formatInstructions = `
 Your output must follow the following example: \n
 [ 
     { 
-        "place": place of interest,
-        "description": A paragraph with at least 10 sentences that describes multiple fun facts about the place like the historical significance, who made it etc
+        "id": some random id that is a number,
+        "title": place of interest,
+        "facts": [fact and it's details about the place, another fact and it's details, interesting event and it's details]
     },
     ...
 ]
@@ -34,7 +35,7 @@ const placesOfInterest = async (location: TPlace) => {
     const prompt = new PromptTemplate({
       template: `Answer the users question as best as possible. \n
                 {format_instructions}
-                \n I am in at this place right now. {location}. I want you to give me the at least 5 specific places around this area which has very high historical significance and has a rich history behind it.`,
+                \n I am in at this place right now. {location}. I want you to give me the at least 7 specific places around this area which has very high historical significance and has a rich history behind it with lots of fun facts.`,
       inputVariables: ["location"],
       partialVariables: { format_instructions: formatInstructions },
     });
@@ -44,6 +45,7 @@ const placesOfInterest = async (location: TPlace) => {
     });
     const chain = new LLMChain({ llm: model, prompt: prompt });
     const response = await chain.run(displayName);
+    console.log("Response aayo: ", response);
     const parsedResponse = await parser.parse(response);
     return parsedResponse;
   } catch (error) {
