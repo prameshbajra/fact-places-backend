@@ -45,7 +45,6 @@ const placesOfInterest = async (location: TPlace) => {
     });
     const chain = new LLMChain({ llm: model, prompt: prompt });
     const response = await chain.run(displayName);
-    console.log("Response aayo: ", response);
     const parsedResponse = await parser.parse(response);
     return parsedResponse;
   } catch (error) {
